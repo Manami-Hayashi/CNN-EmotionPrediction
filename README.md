@@ -1,86 +1,41 @@
 # **FER+ with CNN-EmotionPrediction**
 
 ## **Overview**
-This project focuses on facial expression recognition using the **FER+ dataset**, an enhanced version of the original FER dataset. The **FER+ annotations** provide higher-quality emotion labels, with each image labeled by 10 crowd-sourced taggers. This enables researchers to estimate emotion probability distributions and create models with multi-label outputs, as described in the [FER+ Paper](https://arxiv.org/abs/1608.01041).
+This project focuses on facial expression recognition using the **FER+ dataset**, an enhanced version of the original FER dataset. The FER+ dataset provides improved emotion labels through crowd-sourced annotations, enabling more accurate emotion classification.
 
-Additionally, this project extends the use of FER+ with:
+The project includes:
 1. **CNN Model Training**: Train a Convolutional Neural Network (CNN) for emotion classification.
-2. **Computer Vision Features**: Real-time face detection and emotion recognition with OpenCV and CUDA.
-
-Here’s a comparison between FER and FER+ labels (FER top, FER+ bottom):
-
-![FER vs FER+ example](https://raw.githubusercontent.com/Microsoft/FERPlus/master/FER+vsFER.png)
+2. **Real-Time Emotion Detection**: Use computer vision to predict emotions in real-time with OpenCV and CUDA.
 
 ---
 
-## **FER+ Dataset**
-The new FER+ label file is named **_fer2013new.csv_** and contains the same number of rows as the original **_fer2013.csv_**. The order is identical, allowing you to infer the corresponding emotion tags for each image.  
-Since the image dataset cannot be hosted here, download the FER dataset from [Kaggle FER Challenge](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data).
+## **Dataset Preparation**
+Before running this project, you need to retrieve the **FER+ dataset** by cloning the [FERPlus GitHub repository](https://github.com/microsoft/FERPlus). Follow these steps to prepare the dataset:
 
-### **FER+ CSV Format**
-The FER+ labels include the following fields:
-- **usage**: Specifies whether the image belongs to training, public test, or private test sets.
-- **neutral, happiness, surprise, sadness, anger, disgust, fear, contempt, unknown, NF**: Columns contain vote counts for each emotion, with the addition of `unknown` and `NF (Not a Face)` categories.
-
----
-
-## **Training**
-This project provides training scripts to implement several modes described in the [FER+ Paper](https://arxiv.org/abs/1608.01041). The CNN model supports:
-1. **Majority Voting**
-2. **Probability Distribution**
-3. **Cross Entropy**
-4. **Multi-Target Outputs**
-
-### **Training Commands**
-To train the model, use the following commands:
-```markdown
-#### **Majority Voting Mode**
-```bash
-python train.py -d <dataset base folder> -m majority
-```
-
-#### **Probability Mode**
-```bash
-python train.py -d <dataset base folder> -m probability
-```
-
-#### **Cross Entropy Mode**
-```bash
-python train.py -d <dataset base folder> -m crossentropy
-```
-
-#### **Multi-Target Mode**
-```bash
-python train.py -d <dataset base folder> -m multi_target
-```
-
----
-
-## **FER+ Layout for Training**
-The data folder should follow this structure:
-```
-/data
-  /FER2013Test
-    label.csv
-  /FER2013Train
-    label.csv
-  /FER2013Valid
-    label.csv
-```
-
-The `label.csv` files map the FER image names to their emotion labels. Each image is named as:
-```
-ferXXXXXXXX.png
-```
-Where `XXXXXXXX` is the row index from the original FER CSV file.
-
----
-
-## **Data Preparation**
-1. Download the FER dataset from [Kaggle](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data).
-2. Use the `generate_training_data.py` script to merge `fer2013.csv` and `fer2013new.csv` into PNG images:
+1. **Clone the FERPlus Repository**:
    ```bash
-   python generate_training_data.py -d <dataset base folder> -fer <fer2013.csv path> -ferplus <fer2013new.csv path>
+   git clone https://github.com/microsoft/FERPlus.git
+   cd FERPlus
+   ```
+
+2. **Download the Original FER Dataset**:
+   The original FER dataset must be downloaded from [Kaggle FER Challenge](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data).
+
+3. **Merge and Generate Dataset**:
+   Use the `generate_training_data.py` script from the FERPlus repository to merge `fer2013.csv` and `fer2013new.csv` into PNG images:
+   ```bash
+   python generate_training_data.py -d <dataset base folder> -fer <path_to_fer2013.csv> -ferplus <path_to_fer2013new.csv>
+   ```
+
+4. **Organize the Dataset**:
+   After generating the dataset, store the files in **Google Drive** or your local project folders as shown below:
+
+   ```
+   /data
+     /FER2013Test
+     /FER2013Train
+     /FER2013Valid
+     fer2013new.csv
    ```
 
 ---
@@ -97,7 +52,7 @@ The project includes a Jupyter Notebook for training the CNN model:
    ```bash
    jupyter notebook src/CNN_train_trial.ipynb
    ```
-2. Follow the notebook instructions to train the CNN model with the FER+ dataset.
+2. Follow the notebook instructions to train the CNN model using the FER+ dataset stored in your Google Drive or local folders.
 
 ---
 
@@ -126,21 +81,6 @@ See the detailed setup in [COMPUTER_VISION.md](COMPUTER_VISION.md).
 
 ---
 
-## **Results**
-| **Emotion**   | **Accuracy (%)** |
-|---------------|------------------|
-| Neutral       | 85.4             |
-| Happiness     | 92.1             |
-| Surprise      | 88.7             |
-| Sadness       | 84.3             |
-| Anger         | 82.5             |
-| Disgust       | 80.0             |
-| Fear          | 81.2             |
-| Contempt      | 83.9             |
-| **Overall**   | **84.8**         |
-
----
-
 ## **Repository Structure**
 ```
 FER+CNN/
@@ -160,26 +100,8 @@ FER+CNN/
 
 ---
 
-## **Citation**
-If you use the FER+ labels, scripts, or part of this project in your research, please cite:
-```bibtex
-@inproceedings{BarsoumICMI2016,
-    title={Training Deep Networks for Facial Expression Recognition with Crowd-Sourced Label Distribution},
-    author={Barsoum, Emad and Zhang, Cha and Canton Ferrer, Cristian and Zhang, Zhengyou},
-    booktitle={ACM International Conference on Multimodal Interaction (ICMI)},
-    year={2016}
-}
-```
-
----
-
-## **License**
-This project is licensed under the MIT License.
-
----
-
 ## **Acknowledgments**
-- **FER+ Dataset**: Kaggle FER Challenge
+- **FER+ Dataset**: Resources from the [FERPlus Repository](https://github.com/microsoft/FERPlus).
+- **Kaggle FER Challenge**: For the original FER dataset.
 - **OpenCV and CUDA**: For computer vision and GPU acceleration.
 - **FER+ Original Paper**: Training Deep Networks for Facial Expression Recognition with Crowd-Sourced Label Distribution.
-```
